@@ -1,0 +1,44 @@
+{
+  "tests": [
+    {
+      "name": "Compile Bank API Service",
+      "setup": "",
+      "run": "cd bank-api-service; mvn clean -q package",
+      "input": "",
+      "output": "",
+      "comparison": "",
+      "timeout": 2,
+      "points": 0
+    },
+    {
+      "name": "Compile Account Manager",
+      "setup": "",
+      "run": "cd account-manager; mvn clean -q package",
+      "input": "",
+      "output": "",
+      "comparison": "",
+      "timeout": 2,
+      "points": 0
+    },
+    {
+      "name": "Compile Reporting Service",
+      "setup": "",
+      "run": "cd reporting-service; mvn clean -q package",
+      "input": "",
+      "output": "",
+      "comparison": "",
+      "timeout": 2,
+      "points": 0
+    },
+    {
+      "name": "Compile User Notification Service",
+      "setup": "",
+      "run": "cd user-notification-service; mvn clean -q package",
+      "input": "",
+      "output": "",
+      "comparison": "",
+      "timeout": 2,
+      "points": 0
+    }
+  ]
+}
