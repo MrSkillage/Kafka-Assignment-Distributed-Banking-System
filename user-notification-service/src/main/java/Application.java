@@ -1,9 +1,6 @@
 import org.apache.kafka.clients.consumer.*;
-import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 
-import javax.swing.*;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
@@ -11,7 +8,7 @@ import java.util.Properties;
 public class Application {
 
     // Final Strings of the Topic and Servers available
-    private static final String TOPIC = "suspicious-transactions";
+    private static final String SUSPICIOUS_TRANSACTIONS = "suspicious-transactions";
     private static final String BOOTSTRAP_SERVERS = "localhost:9092.localhost:9093,localhost:9094";
 
     public static void main(String[] args) {
@@ -25,7 +22,7 @@ public class Application {
         // Call createKafkaConsumer method and pass the Servers and Consumer Group
         Consumer<String, Transaction> userConsumer = kafkaUserNotificationConsumerApp.createKafkaConsumer(BOOTSTRAP_SERVERS, consumerGroup);
         // Call consumerMessages method and pass the TOPIC and Consumer we creates above
-        kafkaUserNotificationConsumerApp.consumeMessages(TOPIC, userConsumer);
+        kafkaUserNotificationConsumerApp.consumeMessages(SUSPICIOUS_TRANSACTIONS, userConsumer);
 
     }
 
@@ -43,6 +40,9 @@ public class Application {
                 for (ConsumerRecord<String, Transaction> record : consumerRecords) {
                     System.out.println(String.format("Received record with (key: %s, value: %s)",
                             record.key(), record.value().toString()));
+                    // Call function to print Transaction information
+                    sendUserNotification(record.value());
+
                 }
             } else {
                 // DO NOTHING FOR NOW
@@ -70,7 +70,9 @@ public class Application {
 
     private static void sendUserNotification(Transaction transaction) {
         // Print transaction information to the console
-        System.out.println(transaction.toString());
+        System.out.println(String.format("WARNING! [Transaction made: %s DOES NOT MATCH User Country]\n",
+                transaction.getTransactionLocation()));
+
     }
 
 }

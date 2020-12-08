@@ -54,7 +54,7 @@ public class Application {
 
                 ProducerRecord<String, Transaction> record = new ProducerRecord<>(VALID_TOPIC, user, info);
 
-                RecordMetadata recordMetadata = kafkaProducer.send(record).get();
+                kafkaProducer.send(record).get();
 
                 System.out.println(String.format("[User: %s, Amount: %f, Loc: %s, Home: %s, MATCHED!",
                         user, value, info.getTransactionLocation(), customerAddressDatabase.getUserResidence(user)));
@@ -64,7 +64,7 @@ public class Application {
 
                 ProducerRecord<String, Transaction> record = new ProducerRecord<>(SUSPICIOUS_TOPIC, user, info);
 
-                RecordMetadata recordMetadata = kafkaProducer.send(record).get();
+                kafkaProducer.send(record).get();
 
                 System.out.println(String.format("[User: %s, Amount: %f, Loc: %s, Home: %s, SUSPICIOUS!",
                         user, value, info.getTransactionLocation(), customerAddressDatabase.getUserResidence(user)));
