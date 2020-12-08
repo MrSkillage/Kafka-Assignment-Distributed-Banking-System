@@ -105,7 +105,7 @@ Your repository should contain:
 - A screenshot (named `screenshot.png` of the output of the `kafka-topics` script's `--describe` command, showing the topic and partition information for your two topics (see [Part 1](#part-1-kafka-cluster-setup) above). Windows 10 users can use the shortcut `Windows Key + Shift + S`.
 - A brief screencast demonstrating the application running on your machine. Your screencast should show 4 terminal windows, with each of the micro-services running in each. When the `bank-api-service` is run, the correct messages should be received by the consumer services and be printed to the screen.
 
-![When you add the screenshot.png file to your repo it will show up here](screenshot.png)
+![When you add the screenshot.png file to your repo it will show up here](screenshot.PNG)
 
 ## Grading
 **There is no autograding for this assignment**. GitHub Actions simply builds your submission to verify that it compiles. You should avoid committing code that doesn't compile.
