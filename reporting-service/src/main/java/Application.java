@@ -1,13 +1,12 @@
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.serialization.StringDeserializer;
-
-import java.lang.reflect.Array;
 import java.time.Duration;
 import java.util.*;
 
 public class Application {
     // Final String List of the TRANSACTIONS_TOPICS and Servers available
-    private static final List<String> TRANSACTIONS_TOPICS = Collections.unmodifiableList(Arrays.asList("valid-transactions","suspicious-transactions"));
+    private static final List<String> TRANSACTIONS_TOPICS = Collections.unmodifiableList(
+            Arrays.asList("valid-transactions","suspicious-transactions","high-value-transactions"));
     private static final String BOOTSTRAP_SERVERS = "localhost:9092,localhost:9093,localhost:9094";
 
     public static void main(String[] args) {
@@ -35,8 +34,6 @@ public class Application {
             if (!consumerRecords.isEmpty()) {
                 // For each ConsumerRecord in the list ConsumerRecords print a consume message with formatted details
                 for (ConsumerRecord<String, Transaction> record : consumerRecords) {
-                    System.out.println(String.format("Received record with (key: %s, value: %s)",
-                            record.key(), record.value().toString()));
                     // Call function to print different transaction statements
                     recordTransactionForReporting(record.topic(), record.value());
                 }
@@ -67,11 +64,14 @@ public class Application {
     private static void recordTransactionForReporting(String topic, Transaction transaction) {
         // Print transaction information to the console
         // Print a different message depending on whether transaction is suspicious or valid
-        if (topic.equals("valid-transactions")) {
-            System.out.println(String.format("Recording %s for [User: %s, Amount: %.2f] print to monthly statements.\n",
+        if (topic.equals(TRANSACTIONS_TOPICS.get(0))) {
+            System.out.println(String.format("Recording [%s] for [User: %s, Amount: %.2f] for print to monthly statements.\n",
                     topic, transaction.getUser(), transaction.getAmount()));
-        } else if (topic.equals("suspicious-transactions")) {
-            System.out.println(String.format("Recording %s for [User: %s, Amount: %.2f, Location: %s] Needs verification for legitimacy.\n",
+        } else if (topic.equals(TRANSACTIONS_TOPICS.get(1))) {
+            System.out.println(String.format("Recording [%s] for [User: %s, Amount: %.2f, Location: %s] for verification tracking.\n",
+                    topic, transaction.getUser(), transaction.getAmount(), transaction.getTransactionLocation()));
+        } else if (topic.equals(TRANSACTIONS_TOPICS.get(2))) {
+            System.out.println(String.format("Recording [%s] for [User: %s, Amount: %.2f, Location: %s] for spending records.\n",
                     topic, transaction.getUser(), transaction.getAmount(), transaction.getTransactionLocation()));
         }
 

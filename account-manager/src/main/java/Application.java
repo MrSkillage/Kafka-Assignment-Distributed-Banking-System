@@ -36,8 +36,6 @@ public class Application {
             if (!consumerRecords.isEmpty()) {
                 // For each ConsumerRecord in the list ConsumerRecords print a consume message with formatted details
                 for (ConsumerRecord<String, Transaction> record : consumerRecords) {
-                    System.out.println(String.format("Received record with (key: %s, value: %s, partition: %d, offset: %d)",
-                            record.key(), record.value().toString(), record.partition(), record.offset()));
                     // Call function to print Approving Transaction message
                     approveTransaction(record.value());
                 }
@@ -67,8 +65,8 @@ public class Application {
 
     private static void approveTransaction(Transaction transaction) {
         // Print confirmation message of approved Transaction
-        System.out.println(String.format("Authorising Transaction: [User: %s, Amount: %.2f]\n",
-                transaction.getUser(), transaction.getAmount()));
+        System.out.println(String.format("Authorising Transaction For: [User: %s, Amount: %.2f, Location: %s]\n",
+                transaction.getUser(), transaction.getAmount(), transaction.getTransactionLocation()));
     }
 
 }

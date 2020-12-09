@@ -1,7 +1,8 @@
 import org.apache.kafka.clients.producer.*;
-import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
@@ -9,8 +10,10 @@ import java.util.concurrent.ExecutionException;
  * Banking API Service
  */
 public class Application {
-    private static final String VALID_TOPIC = "valid-transactions";
-    private static final String SUSPICIOUS_TOPIC = "suspicious-transactions";
+    // Create a final List of Strings containing all topics
+    //valid-transaction = 0, suspicious-transaction=1, high-value-transaction=3
+    private static final List<String> TRANSACTIONS_TOPICS = Collections.unmodifiableList(
+            Arrays.asList("valid-transactions","suspicious-transactions","high-value-transactions"));
     private static final String BOOTSTRAP_SERVERS = "localhost:9092,localhost:9093,localhost:9094";
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
@@ -50,25 +53,66 @@ public class Application {
             String user = info.getUser();
             double value = info.getAmount();
 
+            String currentTopic = "";
+            String printTopic = "";
+            ProducerRecord<String, Transaction> record;
+
+            // Checks Transaction amount
+            if (info.getAmount() > 1000.00) {
+
+                currentTopic = TRANSACTIONS_TOPICS.get(2);
+
+                if (printTopic.isEmpty())
+                    printTopic += currentTopic;
+                else if (!printTopic.isEmpty())
+                    printTopic += ", " + currentTopic;
+
+                record = new ProducerRecord<>(currentTopic, user, info);
+
+                kafkaProducer.send(record).get();
+
+                //System.out.println(String.format("[User: %s, Amount %.2f > 1000 account limit!]",
+                //       user, value));
+
+            }
+
+            // Checks for valid location in relation to userAddress
             if (info.getTransactionLocation().equals(customerAddressDatabase.getUserResidence(user))) {
 
-                ProducerRecord<String, Transaction> record = new ProducerRecord<>(VALID_TOPIC, user, info);
+                currentTopic = TRANSACTIONS_TOPICS.get(0);
+
+                if (printTopic.isEmpty())
+                    printTopic += currentTopic;
+                else if (!printTopic.isEmpty())
+                    printTopic += ", " + currentTopic;
+
+                record = new ProducerRecord<>(currentTopic, user, info);
 
                 kafkaProducer.send(record).get();
 
-                System.out.println(String.format("[User: %s, Amount: %f, Loc: %s, Home: %s, MATCHED!",
-                        user, value, info.getTransactionLocation(), customerAddressDatabase.getUserResidence(user)));
+                //System.out.println(String.format("[User: %s, Amount: %f, Loc: %s, Home: %s, MATCHED!]",
+                //        user, value, info.getTransactionLocation(), customerAddressDatabase.getUserResidence(user)));
 
 
-            } else {
+            } else if (!info.getTransactionLocation().equals(customerAddressDatabase.getUserResidence(user))) {
 
-                ProducerRecord<String, Transaction> record = new ProducerRecord<>(SUSPICIOUS_TOPIC, user, info);
+                currentTopic = TRANSACTIONS_TOPICS.get(1);
+
+                if (printTopic.isEmpty())
+                    printTopic += currentTopic;
+                else if (!printTopic.isEmpty())
+                    printTopic += ", " + currentTopic;
+
+                record = new ProducerRecord<>(currentTopic, user, info);
 
                 kafkaProducer.send(record).get();
 
-                System.out.println(String.format("[User: %s, Amount: %f, Loc: %s, Home: %s, SUSPICIOUS!",
-                        user, value, info.getTransactionLocation(), customerAddressDatabase.getUserResidence(user)));
+                //System.out.println(String.format("[User: %s, Amount: %f, Loc: %s, Home: %s, SUSPICIOUS!]",
+                //        user, value, info.getTransactionLocation(), customerAddressDatabase.getUserResidence(user)));
             }
+
+            System.out.println(String.format("[%s] - [User: %s, Amount: %.2f, Loc: %s, Home: %s]",
+                    printTopic, user, value, info.getTransactionLocation(), customerAddressDatabase.getUserResidence(user)));
 
         }
 
