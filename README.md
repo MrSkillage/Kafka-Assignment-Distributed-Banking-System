@@ -107,7 +107,7 @@ Your repository should contain:
 
 ![When you add the screenshot.png file to your repo it will show up here](screenshot.PNG)
 
-<iframe width="1280" height="720" src="https://web.microsoftstream.com/embed/video/bc6a7e85-a133-4c7d-ba0c-acaeb0a893ac?autoplay=false&amp;showinfo=true" allowfullscreen style="border:none;"></iframe>
+![If video isn't showing follow the line https://web.microsoftstream.com/video/bc6a7e85-a133-4c7d-ba0c-acaeb0a893ac](https://web.microsoftstream.com/video/bc6a7e85-a133-4c7d-ba0c-acaeb0a893ac)
 
 ## Grading
 **There is no autograding for this assignment**. GitHub Actions simply builds your submission to verify that it compiles. You should avoid committing code that doesn't compile.
